@@ -1,0 +1,79 @@
+---
+title: "imageGPSscrape"
+author: "NicoleWilliamson"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+
+```{r}
+library("exifr")
+```
+
+```{r}
+
+ dat <- exifr("images/")
+
+
+  # Extract GPS coordinates
+  gps_info <- exif_data$gps
+  
+  # Check if GPS information is available
+  if (!is.null(gps_info)) {
+    latitude <- as.numeric(gps_info$Latitude)
+    longitude <- as.numeric(gps_info$Longitude)
+    
+    # Determine direction (N/S, E/W) and adjust coordinates accordingly
+    latitude <- latitude * ifelse(gps_info$LatitudeRef == "S", -1, 1)
+    longitude <- longitude * ifelse(gps_info$LongitudeRef == "W", -1, 1)
+    
+    # Return the coordinates
+    return(c(latitude = latitude, longitude = longitude))
+  } else {
+    return(NULL)
+  }
+}
+
+# Example usage
+image_path <- "path/to/your/image.jpg"
+coordinates <- get_gps_coordinates(image_path)
+
+if (!is.null(coordinates)) {
+  cat("Latitude:", coordinates["latitude"], "\n")
+  cat("Longitude:", coordinates["longitude"], "\n")
+} else {
+  cat("No GPS coordinates found in the image.\n")
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
